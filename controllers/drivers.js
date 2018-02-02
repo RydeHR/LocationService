@@ -1,6 +1,6 @@
 const redis = require("redis");
 const Promise = require('bluebird');
-const {zone} = require('./zones');
+const zone = require('../helpers.js');
 const client = redis.createClient();
 Promise.promisifyAll(client);
 

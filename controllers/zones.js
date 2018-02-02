@@ -7,10 +7,6 @@ client.on("error", function (err) {
   console.log("Error " + err);
 });
 
-const zone = (long, lat) => {
-  return Math.ceil(20 * Math.trunc((90 - lat) / 18) + (180 + long) / 18);
-};
-
 const getZoneInfo = (zoneKey) => {
   return client.hgetallAsync('zone' + zoneKey)
   .then((res)=> {
@@ -24,10 +20,34 @@ const updateZone = (zoneKey, rider, driver) => {
   client.hincrbyAsync('zone' + zoneKey, 'riders', rider);
 };
 
-// logRiderAndGetDrivers(0,0);
-// buildZones();
+
+const cassandra = require('cassandra-driver');
+const cassClient = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'jackie' });
+
+const getDrivers = (zoneKey) => {
+  const query = `SELECT * FROM drivers WHERE zone = ${zoneKey}`;
+  const st = new Date();
+  cassClient.execute(query)
+  .then(result => {
+    console.log('time', new Date() - st);
+    result.rows.forEach(driver => {
+      client.geoadd('zone' + zoneKey, +driver.long, +driver.xlat, driver.id);
+    });
+  }).catch(err => {
+    console.error('err', err);
+  });
+  const queryC = `SELECT count(*) FROM drivers WHERE zone = ${zoneKey}`;
+  const stC = new Date();
+  return cassClient.execute(queryC)
+  .then(result => {
+    console.log('time', new Date() - stC);
+    return {drivers: +result.rows[0].count,
+            riders: Math.floor(+result.rows[0].count * ((Math.random() * (1.4 - 0.7)) + 0.7)) };
+  });
+}
+
 module.exports = {
-  zone,
   getZoneInfo,
-  updateZone
+  updateZone,
+  getDrivers
 };
