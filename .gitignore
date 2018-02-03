@@ -1,3 +1,5 @@
 tenMillon
 package-lock.json
 node_modules
+config.json
+newrelic.js
