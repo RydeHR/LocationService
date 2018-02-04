@@ -39,17 +39,31 @@ const addDriver = (id, long, lat, zoneKey) => {
       if (err) {
         reject(err);
       } else {
-        resolve(result);
+        resolve({id: id,
+          long: long,
+          lat: lat,
+          zone: zoneKey
+        });
       }
     });
   });
 };
-// addDriver(1,1,1,110);
+// addDriver(1,1,1,110).then(results =>{
+//   console.log(results);
+// });
 
 const findDriver = (long, lat, zoneKey) => {
   return client.georadiusAsync('zone' + zoneKey, long, lat, 5000, 'mi', 'withcoord', 'count', 1, 'asc')
   .then(results => {
+    let id = results[0][0];
     // client.zrem('zone' + zoneKey, results[0][0]);
+    let query = `DELETE from drivers where zone = ${zoneKey} and id =${id}`
+    cassClient.execute(query, (err, result) => {
+      if (err) {
+        console.error('delete err', err);
+      }
+      console.log('delete success');
+    });
     adjustCount(zoneKey, -1);
     return results;
   })

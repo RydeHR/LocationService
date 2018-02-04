@@ -24,15 +24,6 @@ client.on("error", function (err) {
 //
 
 const getDrivers = (zoneKey) => {
-  const query = `SELECT * FROM drivers WHERE zone = ${zoneKey}`;
-  cassClient.execute(query)
-  .then(result => {
-    result.rows.forEach(driver => {
-      client.geoadd('zone' + zoneKey, +driver.long, +driver.xlat, driver.id);
-    });
-  }).catch(err => {
-    console.error('err', err);
-  });
   const queryC = `SELECT * FROM zone WHERE zone = ${zoneKey}`;
   const stC = new Date();
   return cassClient.execute(queryC)
@@ -42,10 +33,24 @@ const getDrivers = (zoneKey) => {
             riders: Math.floor(+result.rows[0].count * ((Math.random() * (1.4 - 0.7)) + 0.7)),
             zone: zoneKey};
   });
-}
+};
+// getDrivers(98);
+
+const sendToRedis = (zoneKey) => {
+  const query = `SELECT * FROM drivers WHERE zone = ${zoneKey}`;
+  cassClient.execute(query)
+  .then(result => {
+    result.rows.forEach(driver => {
+      client.geoadd('zone' + zoneKey, +driver.long, +driver.xlat, driver.id);
+    });
+  }).catch(err => {
+    console.error('err', err);
+  });
+};
 
 module.exports = {
   // getZoneInfo,
   // updateZone,
-  getDrivers
+  getDrivers,
+  sendToRedis
 };

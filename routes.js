@@ -1,18 +1,30 @@
 const Router = require('koa-router');
 const router = new Router();
 const {findDriver, addDriver} = require('./controllers/drivers.js');
-const {getDrivers} = require('./controllers/zones.js');
+const {getDrivers, sendToRedis} = require('./controllers/zones.js');
 const zone = require('./helpers.js');
+const faker = require('faker');
+
+const coordinate = () => {
+  let long = +faker.address.longitude();
+  let lat;
+  do {
+    lat = +faker.address.latitude();
+  } while (Math.abs(lat) > 85);
+  return [long, lat];
+};
 
 router.get('/rider', async (ctx) => { // change to post
-  let results = await getDrivers(zone(50,50)); // 50, 50 from other services
+  let results = await getDrivers(zone(...coordinate())); // 50, 50 from other services
   ctx.body = {
-    message: {...results, zone_id: zone(50,50)}
+    message: {...results}
   };
+  sendToRedis(zone(...coordinate()));
 });
 
 router.get('/driver', async (ctx) => { // get
-  let results = await findDriver(50, 50, zone(50,50)); // 50, 50 from other services
+  let coord = coordinate();
+  let results = await findDriver(coord[0], coord[1], zone(coord[0], coord[1])); // 50, 50 from other services
   // updateZone(zone(50,50), 1, -1);
   ctx.body = {
     message: results
@@ -21,7 +33,11 @@ router.get('/driver', async (ctx) => { // get
 
 router.post('/driver', async (ctx) => { // put
   // updateZone(zone(50,50), -1, 0);
-  addDriver(1, 50, 50, zone(50,50)); // lat long id
+  let coord = coordinate();
+  let results = await addDriver(1, coord[0], coord[1], zone(coord[0], coord[1])); // lat long id
+  ctx.body = {
+    message:results
+  }
 });
 
 module.exports = router;

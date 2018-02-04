@@ -1,13 +1,13 @@
 require('newrelic');
 const Koa = require('koa');
-// const routes = require('./routes.js');
+const routes = require('./routes.js');
 const app = new Koa();
 const PORT = process.env.PORT || 3000;
 const path = require('path');
 const zone = require('./helpers.js');
-const { addDriver, findDriver} = require('./controllers/drivers.js');
+const {addDriver, findDriver} = require('./controllers/drivers.js');
 const {getDrivers} = require('./controllers/zones.js');
-// app.use(routes.routes());
+app.use(routes.routes());
 
 const AWS = require('aws-sdk');
 AWS.config.loadFromPath(path.resolve(__dirname, './config.json'));
@@ -41,9 +41,6 @@ const receive = (url) => {
       "SentTimestamp"
     ],
     MaxNumberOfMessages: 1,
-    MessageAttributeNames: [
-      "All"
-    ],
     QueueUrl: url,
     VisibilityTimeout: 0,
     WaitTimeSeconds: 0
@@ -105,6 +102,7 @@ const sendDriver = () => {
 // sendDriver();
 
 // Post Driver and add to DB
+//TODO!!
 const receiveDriver = () => {
   receive(addDriverQ).then(result => {
     let start = new Date();
