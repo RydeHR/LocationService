@@ -23,7 +23,6 @@ const adjustCount = (zoneKey, num) => {
       if (err) {
         console.error('insert zone err', err);
       }
-      console.log('zone adjusted success');
     })
   });
 };
@@ -31,9 +30,9 @@ const adjustCount = (zoneKey, num) => {
 const addDriver = (id, long, lat, zoneKey) => {
   // client.geoadd('geo:locations', ...arr);
   // client.hincrbyAsync('zone' + zone(arr[0], arr[1]), 'drivers', 1);
-  let name = faker.name.firstName();
+  let name = faker.name.firstName().replace("'", "");
   let query = `INSERT into drivers(id, firstname, long, xlat, zone) values (${id}, '${name}', ${long}, ${lat}, ${zoneKey})`;
-  adjustCount(zoneKey, 1);
+  // adjustCount(zoneKey, 1);
   return new Promise((resolve, reject) => {
     cassClient.execute(query, (err, result) => {
       if (err) {

@@ -18,13 +18,13 @@ create table zone (
   primary key (zone)
 );
 
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/0.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/1.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/2.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/3.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/4.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/5.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/6.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/7.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/8.txt' with delimiter=',';
-copy drivers (id,firstname,long,xlat,zone) from 'tenMillon/9.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/0.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/1.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/2.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/3.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/4.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/5.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/6.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/7.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/8.txt' with delimiter=',';
+copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/9.txt' with delimiter=',';

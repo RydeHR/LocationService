@@ -1,9 +1,10 @@
-// const redis = require('redis');
+const redis = require('redis');
 const Promise = require('bluebird');
 const fs = require('fs');
 const es = require('event-stream');
 const faker = require('faker');
-// const client = redis.createClient();
+const client = redis.createClient();
+Promise.promisifyAll(client);
 // const {addDriver} = require('./drivers.js');
 const zone = require('../helpers.js');
 const cassandra = require('cassandra-driver');
@@ -27,21 +28,21 @@ const createDrivers = (path, n, index = 0) => {
   }
 };
 
+// read from cassandra and write to redis
 const buildZones = () => {
-  for (let i = 1; i < 200; i++) {
+  for (let i = 1; i <= 200; i++) {
     let query = `SELECT count(*) FROM drivers WHERE zone = ${i}`;
     cassClient.execute(query)
     .then(result => {
       let count = +result.rows[0].count;
       console.log(count);
-      let queryN = `INSERT into zone(zone, count) values(${i}, ${count})`;
-      cassClient.execute(queryN);
+      client.hsetAsync(i, 'count', count);
     }).catch(err => {
       console.error('err', err);
     });
   }
 };
-// buildZones();
+buildZones();
 
 // const insertDataIntoDB = (path) => {
 //   let start = new Date();
@@ -63,8 +64,8 @@ const buildZones = () => {
 //   );
 // }
 
-// createDrivers('tenMillon/test.txt', 7);
-// createDrivers('tenMillon/9.txt', 1000000, 9000000);
+// createDrivers('tenMillion/test.txt', 7);
+// createDrivers('tenMillion/9.txt', 1000000, 9000000);
 // console.log('done');
 // insertDataIntoDB('test.txt');
 // createDrivers('ten2.txt', 5000000, 5000000);
