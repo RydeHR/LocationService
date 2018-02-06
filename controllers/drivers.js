@@ -12,37 +12,36 @@ client.on("error", function (err) {
 });
 
 const adjustCount = (zoneKey, num) => {
-  let queryCount = `SELECT * from zone where zone = ${zoneKey}`;
-  cassClient.execute(queryCount, (err, result) => {
-    if (err) {
-      console.error('select err', err);
-    }
-    let count = result.rows[0].count + num;
-    let queryAddCounter = `INSERT into zone(zone, count) values(${zoneKey}, ${count})`;
-    cassClient.execute(queryAddCounter, (err, result) => {
-      if (err) {
-        console.error('insert zone err', err);
-      }
-    })
-  });
+  // Redis
+  client.hincrbyAsync(zoneKey, 'count', num);
+
+  // Cassandra
+  // let queryCount = `SELECT * from zone where zone = ${zoneKey}`;
+  // cassClient.execute(queryCount, (err, result) => {
+  //   if (err) {
+  //     console.error('select err', err);
+  //   }
+  //   let count = result.rows[0].count + num;
+  //   let queryAddCounter = `INSERT into zone(zone, count) values(${zoneKey}, ${count})`;
+  //   cassClient.execute(queryAddCounter, (err, result) => {
+  //     if (err) {
+  //       console.error('insert zone err', err);
+  //     }
+  //   })
+  // });
 };
 
-const addDriver = (id, long, lat, zoneKey) => {
+const addDriver = (id, name, long, lat, zoneKey) => {
   // client.geoadd('geo:locations', ...arr);
   // client.hincrbyAsync('zone' + zone(arr[0], arr[1]), 'drivers', 1);
-  let name = faker.name.firstName().replace("'", "");
   let query = `INSERT into drivers(id, firstname, long, xlat, zone) values (${id}, '${name}', ${long}, ${lat}, ${zoneKey})`;
-  // adjustCount(zoneKey, 1);
+  adjustCount(zoneKey, 1);
   return new Promise((resolve, reject) => {
     cassClient.execute(query, (err, result) => {
       if (err) {
         reject(err);
       } else {
-        resolve({id: id,
-          long: long,
-          lat: lat,
-          zone: zoneKey
-        });
+        resolve('success insert');
       }
     });
   });
@@ -56,14 +55,13 @@ const findDriver = (long, lat, zoneKey) => {
   .then(results => {
     let id = results[0][0];
     // client.zrem('zone' + zoneKey, results[0][0]);
+    adjustCount(zoneKey, -1);
     let query = `DELETE from drivers where zone = ${zoneKey} and id =${id}`
     cassClient.execute(query, (err, result) => {
       if (err) {
         console.error('delete err', err);
       }
-      console.log('delete success');
     });
-    adjustCount(zoneKey, -1);
     return results;
   })
 };

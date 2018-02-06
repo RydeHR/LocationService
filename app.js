@@ -4,9 +4,12 @@ const routes = require('./routes.js');
 const app = new Koa();
 const PORT = process.env.PORT || 3000;
 const path = require('path');
+const bodyparser = require('koa-bodyparser');
 const zone = require('./helpers.js');
 const {addDriver, findDriver} = require('./controllers/drivers.js');
 const {getDrivers} = require('./controllers/zones.js');
+
+app.use(bodyparser());
 app.use(routes.routes());
 
 const AWS = require('aws-sdk');
@@ -107,11 +110,12 @@ const receiveDriver = () => {
   receive(addDriverQ).then(result => {
     let start = new Date();
     let data = (JSON.parse(result[0].Body));
-    addDriver(data.id, data.geo[0], data.geo[1], zone(data.geo[0], data.geo[1]))
+    addDriver(data.id, data.name, data.geo[0], data.geo[1], zone(data.geo[0], data.geo[1]))
     .then((result) => {
       console.log('add Success', result);
+      console.log(new Date() - start, 'ms');
     })
-    // deleteMessage(result, addDriverQ);
+    deleteMessage(result, addDriverQ);
   });
 };
 // receiveDriver();

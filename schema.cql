@@ -12,12 +12,6 @@ create table drivers (
   primary key(zone, id)
 );
 
-create table zone (
-  zone int,
-  count int,
-  primary key (zone)
-);
-
 copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/0.txt' with delimiter=',';
 copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/1.txt' with delimiter=',';
 copy drivers (id,firstname,long,xlat,zone) from 'tenMillion/2.txt' with delimiter=',';

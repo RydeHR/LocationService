@@ -14,33 +14,48 @@ const coordinate = () => {
   return [long, lat];
 };
 
-const random = () => {
-  return Math.floor(Math.random()*10000000)
-}
+const addToRedis = new Set([1,2,3,4,5,6,7,8,9,10]);
 
-router.get('/rider', async (ctx) => { // change to post
-  let results = await getDrivers(zone(...coordinate())); // 50, 50 from other services
+const cronJobToRedis = () => {
+  let arr = [...addToRedis];
+  for (let i = 186; i <= 200; i++) {
+    sendToRedis(i); //change to cronjob
+  }
+  addToRedis.clear();
+};
+// cronJobToRedis();
+
+router.get('/zone', async (ctx) => { // change to post
+  let coordinate = ctx.request.body.location;
+  let results = await getDrivers(zone(...coordinate));
   ctx.body = {
     message: results
   };
-  // sendToRedis(zone(...coordinate())); //change to cronjob
+  // addToRedis.add(zone(...coordinate()));
 });
 
-router.put('/driver', async (ctx) => { // get
-  let coord = coordinate();
-  let results = await findDriver(coord[0], coord[1], zone(coord[0], coord[1])); // 50, 50 from other services
-  // updateZone(zone(50,50), 1, -1);
+router.delete('/driver', async (ctx) => { // get
+  let coordinate = ctx.request.body.location;
+  // let coord = coordinate();
+  let results = await findDriver(coordinate[0], coordinate[1], zone(coordinate[0], coordinate[1]));
   ctx.body = {
-    message: results
+    message: {
+      id: +results[0][0],
+      location: [+results[0][1][0], +results[0][1][1]]
+    }
   };
 });
 
-router.get('/driver', async (ctx) => { // put
-  // updateZone(zone(50,50), -1, 0);
-  let coord = coordinate();
-  let results = await addDriver(random(), coord[0], coord[1], zone(coord[0], coord[1])); // lat long id
+router.post('/driver', async (ctx) => { // post
+  // let id = Math.floor(Math.random() * 10000000);
+  let coordinate = ctx.request.body.location;
+  let {id, name} = ctx.request.body;
+  // let coord = coordinate();
+  // let name = faker.name.firstName().replace("'", "");
+  let results = await addDriver(id, name, coordinate[0], coordinate[1], zone(...coordinate)); // lat long id
+  ctx.status = 201;
   ctx.body = {
-    message:results
+    message: results
   }
 });
 

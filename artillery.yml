@@ -2,11 +2,20 @@ config:
   target: "http://127.0.0.1:3000"
   phases:
     - duration: 60
-      arrivalRate: 30
-      rampTo: 60
-    - duration: 60
-      arrivalRate: 60
+      arrivalRate: 10
+    #   rampTo: 20
+    # - duration: 60
+    #   arrivalRate: 20
 scenarios:
-  - flow:
-    - get:
-        url: "/rider"
+  - name: "Catch a ride"
+    flow:
+      - loop:
+        - get:
+            url: "/driver"
+        # - think: 10
+        # # - get:
+        # #     url: "/driver"
+        # # - think: 5
+        # - post:
+        #     url: "/driver"
+        count: 110

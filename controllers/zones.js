@@ -9,20 +9,6 @@ client.on("error", function (err) {
   console.log("Error " + err);
 });
 
-// const getZoneInfo = (zoneKey) => {
-//   return client.hgetallAsync('zone' + zoneKey)
-//   .then((res)=> {
-//     console.log(res);
-//     return({...res, zone_id: zoneKey});
-//   });
-// }
-//
-// const updateZone = (zoneKey, rider, driver) => {
-//   client.hincrbyAsync('zone' + zoneKey, 'drivers', driver);
-//   client.hincrbyAsync('zone' + zoneKey, 'riders', rider);
-// };
-//
-
 const getDrivers = (zoneKey) => {
   return client.hgetAsync(zoneKey, 'count')
   .then(result => {
@@ -49,14 +35,13 @@ const sendToRedis = (zoneKey) => {
     result.rows.forEach(driver => {
       client.geoaddAsync('zone' + zoneKey, +driver.long, +driver.xlat, driver.id);
     });
+    console.log('complete zone', zoneKey);
   }).catch(err => {
     console.error('err', err);
   });
 };
 
 module.exports = {
-  // getZoneInfo,
-  // updateZone,
   getDrivers,
   sendToRedis
 };
