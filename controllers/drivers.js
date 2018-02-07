@@ -1,6 +1,5 @@
 const redis = require("redis");
 const Promise = require('bluebird');
-const zone = require('../helpers.js');
 const client = redis.createClient();
 Promise.promisifyAll(client);
 const cassandra = require('cassandra-driver');
@@ -56,7 +55,7 @@ const findDriver = (long, lat, zoneKey) => {
     let id = results[0][0];
     // client.zrem('zone' + zoneKey, results[0][0]);
     adjustCount(zoneKey, -1);
-    let query = `DELETE from drivers where zone = ${zoneKey} and id =${id}`
+    let query = `INSERT into drivers(id, firstname, long, xlat, zone) values (${id}, null, ${long}, ${lat}, ${zoneKey}) using ttl 1`;
     cassClient.execute(query, (err, result) => {
       if (err) {
         console.error('delete err', err);

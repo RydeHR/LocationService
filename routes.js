@@ -26,8 +26,8 @@ const cronJobToRedis = () => {
 // cronJobToRedis();
 
 router.get('/zone', async (ctx) => { // change to post
-  let coordinate = ctx.request.body.location;
-  let results = await getDrivers(zone(...coordinate));
+  let coords = ctx.request.body.location || coordinate();
+  let results = await getDrivers(zone(...coords));
   ctx.body = {
     message: results
   };
@@ -35,24 +35,23 @@ router.get('/zone', async (ctx) => { // change to post
 });
 
 router.delete('/driver', async (ctx) => { // get
-  let coordinate = ctx.request.body.location;
+  let coords = ctx.request.body.location || coordinate();
   // let coord = coordinate();
-  let results = await findDriver(coordinate[0], coordinate[1], zone(coordinate[0], coordinate[1]));
+  let results = await findDriver(coords[0], coords[1], zone(...coords));
   ctx.body = {
     message: {
       id: +results[0][0],
-      location: [+results[0][1][0], +results[0][1][1]]
+      location: [+results[0][1][0], +results[0][1][1]],
+      zone: zone(...coords)
     }
   };
 });
 
 router.post('/driver', async (ctx) => { // post
-  // let id = Math.floor(Math.random() * 10000000);
-  let coordinate = ctx.request.body.location;
-  let {id, name} = ctx.request.body;
-  // let coord = coordinate();
-  // let name = faker.name.firstName().replace("'", "");
-  let results = await addDriver(id, name, coordinate[0], coordinate[1], zone(...coordinate)); // lat long id
+  let coords = ctx.request.body.location || coordinate();
+  let id = ctx.request.body.id || Math.floor(Math.random() * 10000000);
+  let name = ctx.request.body.name || faker.name.firstName().replace("'", "");
+  let results = await addDriver(id, name, coords[0], coords[1], zone(...coords)); // lat long id
   ctx.status = 201;
   ctx.body = {
     message: results

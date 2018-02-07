@@ -10,7 +10,7 @@ scenarios:
   - name: "Catch a ride"
     flow:
       - loop:
-        - get:
+        - delete:
             url: "/driver"
         # - think: 10
         # # - get:
@@ -18,4 +18,4 @@ scenarios:
         # # - think: 5
         # - post:
         #     url: "/driver"
-        count: 110
+        count: 100
