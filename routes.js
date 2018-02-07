@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const router = new Router();
-const {findDriver, addDriver} = require('./controllers/drivers.js');
+const {findDriver, addDriver, deleteDriver} = require('./controllers/drivers.js');
 const {getDrivers, sendToRedis} = require('./controllers/zones.js');
 const zone = require('./helpers.js');
 const faker = require('faker');
@@ -18,10 +18,10 @@ const addToRedis = new Set([1,2,3,4,5,6,7,8,9,10]);
 
 const cronJobToRedis = () => {
   let arr = [...addToRedis];
-  for (let i = 186; i <= 200; i++) {
+  for (let i = 101; i <= 200; i++) {
     sendToRedis(i); //change to cronjob
   }
-  addToRedis.clear();
+  // addToRedis.clear();
 };
 // cronJobToRedis();
 
@@ -45,6 +45,7 @@ router.delete('/driver', async (ctx) => { // get
       zone: zone(...coords)
     }
   };
+  deleteDriver(+results[0][0], zone(...coords));
 });
 
 router.post('/driver', async (ctx) => { // post

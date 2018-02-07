@@ -55,18 +55,22 @@ const findDriver = (long, lat, zoneKey) => {
     let id = results[0][0];
     // client.zrem('zone' + zoneKey, results[0][0]);
     adjustCount(zoneKey, -1);
-    let query = `INSERT into drivers(id, firstname, long, xlat, zone) values (${id}, null, ${long}, ${lat}, ${zoneKey}) using ttl 1`;
-    cassClient.execute(query, (err, result) => {
-      if (err) {
-        console.error('delete err', err);
-      }
-    });
     return results;
   })
 };
 // findDriver(1,1,110);
 
+const deleteDriver = (id, zoneKey) => {
+  let query = `INSERT into drivers(id, firstname, long, xlat, zone) values (${id}, null, 0, 0, ${zoneKey}) using ttl 1`;
+  cassClient.execute(query, (err, result) => {
+    if (err) {
+      console.error('delete err', err);
+    }
+  });
+};
+
 module.exports = {
   findDriver,
-  addDriver
+  addDriver,
+  deleteDriver
 }
