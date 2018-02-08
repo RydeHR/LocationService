@@ -1,9 +1,9 @@
 const redis = require("redis");
-const Promise = require('bluebird');
 const client = redis.createClient();
+const Promise = require('bluebird');
 Promise.promisifyAll(client);
-const cassandra = require('cassandra-driver');
-const cassClient = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'location' });
+// const cassandra = require('cassandra-driver');
+// const cassClient = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'location' });
 
 client.on("error", function (err) {
   console.log("Error " + err);
@@ -28,20 +28,6 @@ const getDrivers = (zoneKey) => {
 };
 // getDrivers(98);
 
-const sendToRedis = (zoneKey) => {
-  const query = `SELECT * FROM drivers WHERE zone = ${zoneKey}`;
-  cassClient.execute(query)
-  .then(result => {
-    result.rows.forEach(driver => {
-      client.geoaddAsync('zone' + zoneKey, +driver.long, +driver.xlat, driver.id);
-    });
-    console.log('complete zone', zoneKey);
-  }).catch(err => {
-    console.error('err', err);
-  });
-};
-
 module.exports = {
-  getDrivers,
-  sendToRedis
+  getDrivers
 };

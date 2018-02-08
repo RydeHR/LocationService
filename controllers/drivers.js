@@ -45,9 +45,7 @@ const addDriver = (id, name, long, lat, zoneKey) => {
     });
   });
 };
-// addDriver(1,1,1,110).then(results =>{
-//   console.log(results);
-// });
+// addDriver(1,1,1,110);
 
 const findDriver = (long, lat, zoneKey) => {
   return client.georadiusAsync('zone' + zoneKey, long, lat, 5000, 'mi', 'withcoord', 'count', 1, 'asc')

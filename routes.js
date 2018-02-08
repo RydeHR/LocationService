@@ -1,29 +1,14 @@
 const Router = require('koa-router');
 const router = new Router();
 const {findDriver, addDriver, deleteDriver} = require('./controllers/drivers.js');
-const {getDrivers, sendToRedis} = require('./controllers/zones.js');
-const zone = require('./helpers.js');
+const {getDrivers} = require('./controllers/zones.js');
+const {zone, coordinate, cronJobToRedis} = require('./helpers.js');
 const faker = require('faker');
+const CronJob = require('cron').CronJob;
 
-const coordinate = () => {
-  let long = +faker.address.longitude();
-  let lat;
-  do {
-    lat = +faker.address.latitude();
-  } while (Math.abs(lat) > 85);
-  return [long, lat];
-};
-
-const addToRedis = new Set([1,2,3,4,5,6,7,8,9,10]);
-
-const cronJobToRedis = () => {
-  let arr = [...addToRedis];
-  for (let i = 101; i <= 200; i++) {
-    sendToRedis(i); //change to cronjob
-  }
-  // addToRedis.clear();
-};
-// cronJobToRedis();
+new CronJob('*/5 * * * *', () => {
+  cronJobToRedis();
+}, null, true, 'America/Los_Angeles');
 
 router.get('/zone', async (ctx) => { // change to post
   let coords = ctx.request.body.location || coordinate();
@@ -31,7 +16,6 @@ router.get('/zone', async (ctx) => { // change to post
   ctx.body = {
     message: results
   };
-  // addToRedis.add(zone(...coordinate()));
 });
 
 router.delete('/driver', async (ctx) => { // get

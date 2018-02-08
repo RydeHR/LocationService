@@ -483,3 +483,9 @@
 {"v":0,"level":40,"name":"newrelic","hostname":"jj","pid":7215,"time":"2018-02-07T07:29:43.553Z","msg":"analytics event overflow, dropped 148618 events; try increasing your limit above 10000"}
 {"v":0,"level":40,"name":"newrelic","hostname":"jj","pid":7215,"time":"2018-02-07T07:30:43.605Z","msg":"analytics event overflow, dropped 65204 events; try increasing your limit above 10000"}
 {"v":0,"level":40,"name":"newrelic","hostname":"jj","pid":7215,"time":"2018-02-07T07:31:43.666Z","msg":"analytics event overflow, dropped 49496 events; try increasing your limit above 10000"}
+{"v":0,"level":30,"name":"newrelic","hostname":"jackie-ThinkPad-T440","pid":17178,"time":"2018-02-07T18:42:28.946Z","msg":"Using New Relic for Node.js. Agent version: 2.7.0; Node version: v9.2.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"jackie-ThinkPad-T440","pid":17178,"time":"2018-02-07T18:42:29.029Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"jackie-ThinkPad-T440","pid":23281,"time":"2018-02-07T23:12:10.550Z","msg":"Using New Relic for Node.js. Agent version: 2.7.0; Node version: v9.2.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"jackie-ThinkPad-T440","pid":23281,"time":"2018-02-07T23:12:10.868Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"jackie-ThinkPad-T440","pid":23281,"time":"2018-02-07T23:12:28.356Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/1871571/applications/104377832","component":"new_relic_response"}
+{"v":0,"level":30,"name":"newrelic","hostname":"jackie-ThinkPad-T440","pid":23281,"time":"2018-02-07T23:12:28.357Z","msg":"Connected to collector-175.newrelic.com:443 with agent run ID WzIse2E6OTQwOTU1NDYxLGI6MTA0Mzc3ODM0LGM6MTg3MTU3MSxkOiIyLjcuMCIsZToibm9kZWpzIixmOiJqYWNraWUtVGhpbmtQYWQtVDQ0MCIsZzpbe2E6MTA0Mzc3ODMyLGI6IlJ5ZGUgTG9jYXRpb25zIn1dfSwxMTg0MDY5MTEzXQ.","component":"collector_api"}
