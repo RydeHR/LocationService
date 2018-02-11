@@ -3,19 +3,14 @@ config:
   phases:
     - duration: 60
       arrivalRate: 10
-    #   rampTo: 20
-    # - duration: 60
-    #   arrivalRate: 20
 scenarios:
   - name: "Catch a ride"
     flow:
       - loop:
         - get:
             url: "/zone"
-        # - think: 10
-        # # - get:
-        # #     url: "/driver"
-        # # - think: 5
+        # - delete:
+        #     url: "/driver"
         # - post:
         #     url: "/driver"
         count: 100

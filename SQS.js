@@ -1,6 +1,6 @@
 const {zone} = require('./helpers.js');
-const {addDriver, findDriver, deleteDriver} = require('./controllers/drivers.js');
-const {getDrivers} = require('./controllers/zones.js');
+const {addDriver, deleteDriver} = require('./database/cassandra/controllers.js');
+const {getDrivers, findDriver} = require('./database/redis/controllers.js');
 const AWS = require('aws-sdk');
 const path = require('path');
 AWS.config.loadFromPath(path.resolve(__dirname, './config.json'));

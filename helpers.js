@@ -1,14 +1,6 @@
-const redis = require("redis");
-const client = redis.createClient();
-const Promise = require('bluebird');
-Promise.promisifyAll(client);
-const cassandra = require('cassandra-driver');
-const cassClient = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'location' });
+const redisClient = require('./database/redis/redis.js');
+const cassClient = require('./database/cassandra/cassandra.js');
 const faker = require('faker');
-
-client.on("error", function (err) {
-  console.log("Error " + err);
-});
 
 const zone = (long, lat) => {
   return Math.ceil(20 * Math.trunc((90 - lat) / 18) + (180 + long) / 18);
@@ -29,7 +21,7 @@ const sendToRedis = (start, end) => {
     cassClient.execute(query)
     .then(result => {
       result.rows.forEach(driver => {
-        client.geoaddAsync('zone' + i, +driver.long, +driver.xlat, driver.id);
+        redisClient.geoaddAsync('zone' + i, +driver.long, +driver.xlat, driver.id);
       });
       console.log('complete zone', i);
     }).catch(err => {
@@ -49,8 +41,37 @@ const cronJobToRedis = () => {
   setTimeout(() => sendToRedis(176, 200), 70000);
 };
 
+
+// read from cassandra and write to redis
+const buildZones = (start, end) => {
+  for (let i = start; i <= end; i++) {
+    let query = `SELECT count(*) FROM drivers WHERE zone = ${i}`;
+    cassClient.execute(query)
+    .then(result => {
+      let count = +result.rows[0].count;
+      console.log(count);
+      redisClient.hsetAsync(i, 'count', count);
+    }).catch(err => {
+      console.error('err', err);
+    });
+  }
+};
+
+const createZone = () => {
+  buildZones(1, 25);
+  setTimeout(() => buildZones(26, 50), 10000);
+  setTimeout(() => buildZones(51, 75), 20000);
+  setTimeout(() => buildZones(76, 100), 30000);
+  setTimeout(() => buildZones(101, 125), 40000);
+  setTimeout(() => buildZones(126, 150), 50000);
+  setTimeout(() => buildZones(151, 175), 60000);
+  setTimeout(() => buildZones(176, 200), 70000);
+};
+
+setTimeout(createZone, 180000);
+
 module.exports = {
   zone,
   coordinate,
-  cronJobToRedis
+  cronJobToRedis,
 };

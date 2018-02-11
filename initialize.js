@@ -1,14 +1,9 @@
-const redis = require('redis');
-const Promise = require('bluebird');
 const fs = require('fs');
 const es = require('event-stream');
 const faker = require('faker');
-const client = redis.createClient();
-Promise.promisifyAll(client);
-// const {addDriver} = require('./drivers.js');
-const zone = require('../helpers.js');
-const cassandra = require('cassandra-driver');
-const cassClient = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'location' });
+const redisClient = require('./database/redis/redis.js');
+const zone = require('./helpers.js');
+const cassClient = require('./database/cassandra/cassandra.js');
 
 const createDrivers = (path, n, index = 0) => {
   let wstream = fs.createWriteStream(path);
@@ -28,21 +23,6 @@ const createDrivers = (path, n, index = 0) => {
   }
 };
 
-// read from cassandra and write to redis
-const buildZones = () => {
-  for (let i = 1; i <= 200; i++) {
-    let query = `SELECT count(*) FROM drivers WHERE zone = ${i}`;
-    cassClient.execute(query)
-    .then(result => {
-      let count = +result.rows[0].count;
-      console.log(count);
-      client.hsetAsync(i, 'count', count);
-    }).catch(err => {
-      console.error('err', err);
-    });
-  }
-};
-buildZones();
 
 // const insertDataIntoDB = (path) => {
 //   let start = new Date();
@@ -59,7 +39,7 @@ buildZones();
 //   .on('end', () => {
 //     console.log('Read entire file.')
 //     console.log((new Date() - start) / 1000, 'seconds');
-//     // client.quit();
+//     // redisClient.quit();
 //   })
 //   );
 // }

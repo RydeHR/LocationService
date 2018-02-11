@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    image: jackie/node
+    build: .
+    ports:
+     - "3000:3000"
+    volumes:
+     - .:/usr/src/app
+    links:
+     - redis
+     - cassandra
+  redis:
+    image: redis
+    volumes:
+      - /var/lib/redis/data:/var/lib/redis/data
+  cassandra:
+    image: ryde/cassandra
+    volumes:
+      - /var/lib/cassandra/data:/var/lib/cassandra/data

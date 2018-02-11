@@ -1,5 +1,5 @@
 drop keyspace if exists location;
-create keyspace location with replication = {'class':'SimpleStrategy','replication_factor' : 2};
+create keyspace location with replication = {'class':'SimpleStrategy','replication_factor' : 3};
 
 use location;
 

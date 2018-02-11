@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const router = new Router();
-const {findDriver, addDriver, deleteDriver} = require('./controllers/drivers.js');
-const {getDrivers} = require('./controllers/zones.js');
+const {addDriver, deleteDriver} = require('./database/cassandra/controllers.js');
+const {getDrivers, findDriver} = require('./database/redis/controllers.js');
 const {zone, coordinate, cronJobToRedis} = require('./helpers.js');
 const faker = require('faker');
 const CronJob = require('cron').CronJob;
@@ -11,7 +11,8 @@ new CronJob('*/5 * * * *', () => {
 }, null, true, 'America/Los_Angeles');
 
 router.get('/zone', async (ctx) => { // change to post
-  let coords = ctx.request.body.location || coordinate();
+  // console.log(ctx.request.body);
+  let coords = ctx.request.body.geolocationPickup || coordinate();
   let results = await getDrivers(zone(...coords));
   ctx.body = {
     message: results
@@ -19,7 +20,7 @@ router.get('/zone', async (ctx) => { // change to post
 });
 
 router.delete('/driver', async (ctx) => { // get
-  let coords = ctx.request.body.location || coordinate();
+  let coords = ctx.request.body.geolocationPickup || coordinate();
   // let coord = coordinate();
   let results = await findDriver(coords[0], coords[1], zone(...coords));
   ctx.body = {

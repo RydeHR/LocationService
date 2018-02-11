@@ -4,3 +4,4 @@ node_modules
 config.json
 newrelic.js
 newrelic_agent.log
+.nyc*
