@@ -2,19 +2,51 @@ version: '3'
 services:
   web:
     image: jackie/node
-    build: .
+    # build: .
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
     ports:
      - "3000:3000"
     volumes:
      - .:/usr/src/app
-    links:
-     - redis
-     - cassandra
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8000:8000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
   redis:
     image: redis
+    ports:
+      - "6379:6379"
     volumes:
       - /var/lib/redis/data:/var/lib/redis/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    command: redis-server --appendonly yes
+    networks:
+      - webnet
   cassandra:
-    image: ryde/cassandra
+    image: jackiejou/cassandra:1
+    ports:
+      - "9042:9042"
     volumes:
       - /var/lib/cassandra/data:/var/lib/cassandra/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    command: redis-server --appendonly yes
+    networks:
+      - webnet
+networks:
+  webnet:
