@@ -68,6 +68,7 @@ const send = (url, body) => {
 const zoneQConsumer = Consumer.create({
   queueUrl: zoneQ,
   region: 'us-west-1',
+  batchSize: 10,
   handleMessage: (message, done) => {
     let start = new Date();
     getDrivers(zone(...JSON.parse(message.Body)))
@@ -90,6 +91,7 @@ zoneQConsumer.start();
 const findQConsumer = Consumer.create({
   queueUrl: findQ,
   region: 'us-west-1',
+  batchSize: 10,
   handleMessage: (message, done) => {
     let start = new Date();
     findDriver(...JSON.parse(message.Body), zone(...JSON.parse(message.Body)))
@@ -112,6 +114,7 @@ findQConsumer.start();
 const driverQConsumer = Consumer.create({
   queueUrl: driverQ,
   region: 'us-west-1',
+  batchSize: 10,
   handleMessage: (message, done) => {
     let data = JSON.parse(message.Body);
     console.log(data);

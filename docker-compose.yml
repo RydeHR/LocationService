@@ -5,10 +5,10 @@ services:
     # build: .
     deploy:
       replicas: 3
-      restart_policy:
-        condition: on-failure
+      # restart_policy:
+      #   condition: on-failure
     ports:
-     - "3000:3000"
+     - "8080:8080"
     volumes:
      - .:/usr/src/app
     networks:

@@ -3,7 +3,7 @@ const es = require('event-stream');
 const faker = require('faker');
 const redisClient = require('./database/redis/redis.js');
 const cassClient = require('./database/cassandra/cassandra.js');
-const zone = require('./helpers.js');
+const {zone} = require('./helpers.js');
 
 const sendToRedis = (start, end) => {
   for (let i = start; i <= end; i++) {
@@ -97,7 +97,7 @@ const createDrivers = (path, n, index = 0) => {
 //   );
 // }
 
-// createDrivers('tenMillion/test.txt', 7);
+// createDrivers('tenMillion/test.txt', 500000);
 // createDrivers('tenMillion/9.txt', 1000000, 9000000);
 // console.log('done');
 // insertDataIntoDB('test.txt');

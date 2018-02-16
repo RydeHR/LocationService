@@ -6,4 +6,4 @@ const sendToQ = () => {
   send(zoneQ, JSON.stringify(coordinate()));
 };
 
-setInterval(sendToQ, 100);
+setInterval(sendToQ, 5);
